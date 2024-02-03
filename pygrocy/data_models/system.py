@@ -2,24 +2,38 @@ from datetime import date, datetime
 from typing import List
 
 from pygrocy.base import DataModel
-from pygrocy.grocy_api_client import SystemConfigDto, SystemInfoDto, SystemTimeDto
+from pygrocy.grocy_api_client import SystemConfigDto, SystemInfoDto, SystemTimeDto, GrocyVersionDto
 
 
 class SystemInfo(DataModel):
     def __init__(self, system_info_dto: SystemInfoDto):
-        self._grocy_version = system_info_dto.grocy_version_info.version
-        self._grocy_release_date = system_info_dto.grocy_version_info.release_date
         self._php_version = system_info_dto.php_version
         self._sqlite_version = system_info_dto.sqlite_version
         self._os = system_info_dto.os
         self._client = system_info_dto.client
+        grocy_version_info = system_info_dto.grocy_version_info
+        if isinstance(grocy_version_info, GrocyVersionDto):
+            self._grocy_version = grocy_version_info.version
+            self._grocy_release_date = grocy_version_info.release_date
+        elif grocy_version_info:
+            # This case shouldn't be ran into, but just in case
+            # But just in case, let's see if we can still grab the information
+            # if the grocy_version_info property is defined
+            if hasattr(grocy_version_info, 'version'):
+                self._grocy_version: str | None = str(grocy_version_info.version)
+            if hasattr(grocy_version_info, 'release_date'):
+                self._grocy_version: datetime.date | None = grocy_version_info.release_date
+            elif not hasattr(grocy_version_info, 'version'):
+                # Maybe we want to die here? Let's ask repo owners
+                pass
+            
 
     @property
-    def grocy_version(self) -> str:
+    def grocy_version(self) -> str | None:
         return self._grocy_version
 
     @property
-    def grocy_release_date(self) -> date:
+    def grocy_release_date(self) -> date | None:
         return self._grocy_release_date
 
     @property

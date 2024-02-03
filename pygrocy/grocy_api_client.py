@@ -227,8 +227,8 @@ class CurrentBatteryResponse(BaseModel):
 class BatteryData(BaseModel):
     id: int
     name: str
-    description: str
-    used_in: str
+    description: str | None
+    used_in: str | None
     charge_interval_days: int
     created_timestamp: datetime = Field(alias="row_created_timestamp")
     userfields: Optional[Dict] = None

@@ -41,11 +41,11 @@ class QuantityUnit(DataModel):
         return self._name
 
     @property
-    def name_plural(self) -> str:
+    def name_plural(self) -> str | None:
         return self._name_plural
 
     @property
-    def description(self) -> str:
+    def description(self) -> str | None:
         return self._description
 
 
@@ -121,45 +121,47 @@ class Product(DataModel):
     def get_details(self, api_client: GrocyApiClient):
         details = api_client.get_product(self.id)
         if details:
-            self._name = details.product.name
             self._barcodes = [ProductBarcode(barcode) for barcode in details.barcodes]
-            self._product_group_id = details.product.product_group_id
             self._available_amount = details.stock_amount
+            product = details.product
+            if isinstance(product, ProductData):
+                self._name = product.name
+                self._product_group_id = product.product_group_id
 
     @property
-    def name(self) -> str:
+    def name(self) -> str | None:
         return self._name
 
     @property
-    def id(self) -> int:
+    def id(self) -> int | None:
         return self._id
 
     @property
-    def product_group_id(self) -> int:
+    def product_group_id(self) -> int | None:
         return self._product_group_id
 
     @property
-    def available_amount(self) -> float:
+    def available_amount(self) -> float | None:
         return self._available_amount
 
     @property
-    def amount_aggregated(self) -> float:
+    def amount_aggregated(self) -> float | None:
         return self._amount_aggregated
 
     @property
-    def amount_opened(self) -> float:
+    def amount_opened(self) -> float | None:
         return self._amount_opened
 
     @property
-    def amount_opened_aggregated(self) -> float:
+    def amount_opened_aggregated(self) -> float | None:
         return self._amount_opened_aggregated
 
     @property
-    def is_aggregated_amount(self) -> bool:
+    def is_aggregated_amount(self) -> bool | None:
         return self._is_aggregated_amount
 
     @property
-    def best_before_date(self) -> datetime.date:
+    def best_before_date(self) -> datetime.date | None:
         return self._best_before_date
 
     @property
@@ -171,15 +173,15 @@ class Product(DataModel):
         return self._barcodes
 
     @property
-    def amount_missing(self) -> float:
+    def amount_missing(self) -> float | None:
         return self._amount_missing
 
     @property
-    def is_partly_in_stock(self) -> int:
+    def is_partly_in_stock(self) -> int | None:
         return self._is_partly_in_stock
 
     @property
-    def default_quantity_unit_purchase(self) -> QuantityUnit:
+    def default_quantity_unit_purchase(self) -> QuantityUnit | None:
         return self._default_quantity_unit_purchase
 
 
@@ -198,13 +200,14 @@ class Group(DataModel):
         return self._name
 
     @property
-    def description(self) -> str:
+    def description(self) -> str | None:
         return self._description
 
 
 class ShoppingListProduct(DataModel):
     def __init__(self, raw_shopping_list: ShoppingListItem):
         self._id = raw_shopping_list.id
+        self._shopping_list_id = raw_shopping_list.shopping_list_id
         self._product_id = raw_shopping_list.product_id
         self._note = raw_shopping_list.note
         self._amount = raw_shopping_list.amount
@@ -213,14 +216,17 @@ class ShoppingListProduct(DataModel):
 
     def get_details(self, api_client: GrocyApiClient):
         if self._product_id:
-            self._product = Product(api_client.get_product(self._product_id))
+            product = Product(api_client.get_product(self._product_id))
+            self._product = product if product else None
+        else:
+            self._product = None
 
     @property
     def id(self) -> int:
         return self._id
 
     @property
-    def product_id(self) -> int:
+    def product_id(self) -> int | None:
         return self._product_id
 
     @property
@@ -228,11 +234,11 @@ class ShoppingListProduct(DataModel):
         return self._amount
 
     @property
-    def note(self) -> str:
+    def note(self) -> str | None:
         return self._note
 
     @property
-    def product(self) -> Product:
+    def product(self) -> Product | None:
         return self._product
     
     @property

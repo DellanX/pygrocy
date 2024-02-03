@@ -103,27 +103,27 @@ class MealPlanItem(DataModel):
         return self._day
 
     @property
-    def recipe_id(self) -> int:
+    def recipe_id(self) -> int | None:
         return self._recipe_id
 
     @property
-    def recipe_servings(self) -> int:
+    def recipe_servings(self) -> int | None:
         return self._recipe_servings
 
     @property
-    def note(self) -> str:
+    def note(self) -> str | None:
         return self._note
 
     @property
-    def recipe(self) -> RecipeItem:
+    def recipe(self) -> RecipeItem | None:
         return self._recipe
 
     @property
-    def section_id(self) -> int:
+    def section_id(self) -> int | None:
         return self._section_id
 
     @property
-    def section(self) -> MealPlanSection:
+    def section(self) -> MealPlanSection | None:
         return self._section
 
     @property
@@ -131,15 +131,17 @@ class MealPlanItem(DataModel):
         return self._type
 
     @property
-    def product_id(self) -> int:
+    def product_id(self) -> int | None:
         return self._product_id
 
     def get_details(self, api_client: GrocyApiClient):
         if self.recipe_id:
             recipe = api_client.get_recipe(self.recipe_id)
-            if recipe:
-                self._recipe = RecipeItem(recipe)
+            self._recipe = RecipeItem(recipe) if recipe else None
+        else:
+            self._recipe = None
         if self.section_id:
             section = api_client.get_meal_plan_section(self.section_id)
-            if section:
-                self._section = MealPlanSection(section)
+            self._section = MealPlanSection(section) if section else None
+        else:
+            self._section = None

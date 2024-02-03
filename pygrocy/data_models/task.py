@@ -22,7 +22,7 @@ class TaskCategory(DataModel):
         return self._name
 
     @property
-    def description(self) -> str:
+    def description(self) -> str | None:
         return self._description
 
     @property
@@ -57,11 +57,11 @@ class Task(DataModel):
         return self._name
 
     @property
-    def description(self) -> str:
+    def description(self) -> str | None:
         return self._description
 
     @property
-    def due_date(self) -> datetime.date:
+    def due_date(self) -> datetime.date | None:
         return self._due_date
 
     @property
@@ -69,25 +69,25 @@ class Task(DataModel):
         return self._done
 
     @property
-    def done_timestamp(self) -> datetime:
+    def done_timestamp(self) -> datetime | None:
         return self._done_timestamp
 
     @property
-    def category_id(self) -> int:
+    def category_id(self) -> int | None:
         return self._category_id
 
     @property
-    def category(self) -> TaskCategory:
+    def category(self) -> TaskCategory | None:
         return self._category
 
     @property
-    def assigned_to_user_id(self) -> int:
+    def assigned_to_user_id(self) -> int | None:
         return self._assigned_to_user_id
 
     @property
-    def assigned_to_user(self) -> User:
+    def assigned_to_user(self) -> User | None:
         return self._assigned_to_user
 
     @property
-    def userfields(self) -> Dict[str, str]:
+    def userfields(self) -> Dict[str, str] | None:
         return self._userfields

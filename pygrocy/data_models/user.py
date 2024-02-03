@@ -19,13 +19,13 @@ class User(DataModel):
         return self._username
 
     @property
-    def first_name(self) -> str:
+    def first_name(self) -> str | None:
         return self._first_name
 
     @property
-    def last_name(self) -> str:
+    def last_name(self) -> str | None:
         return self._last_name
 
     @property
-    def display_name(self) -> str:
+    def display_name(self) -> str | None:
         return self._display_name

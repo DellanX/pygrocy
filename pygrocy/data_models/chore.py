@@ -6,6 +6,7 @@ from pygrocy.base import DataModel
 from pygrocy.data_models.user import User
 from pygrocy.grocy_api_client import (
     ChoreDetailsResponse,
+    ChoreData,
     CurrentChoreResponse,
     GrocyApiClient,
 )
@@ -47,30 +48,31 @@ class Chore(DataModel):
     # noinspection PyPep8Naming
     def _init_from_ChoreDetailsResponse(self, response: ChoreDetailsResponse):
         chore_data = response.chore
-        self._id = chore_data.id
-        self._name = chore_data.name
-        self._description = chore_data.description
+        if isinstance(chore_data, ChoreData):
+            self._id = chore_data.id
+            self._name = chore_data.name
+            self._description = chore_data.description
 
-        if chore_data.period_type is not None:
-            self._period_type = PeriodType(chore_data.period_type)
-        else:
-            self._period_type = None
+            if chore_data.period_type is not None:
+                self._period_type = PeriodType(chore_data.period_type)
+            else:
+                self._period_type = None
 
-        self._period_config = chore_data.period_config
-        self._period_days = chore_data.period_days
-        self._track_date_only = chore_data.track_date_only
-        self._rollover = chore_data.rollover
+            self._period_config = chore_data.period_config
+            self._period_days = chore_data.period_days
+            self._track_date_only = chore_data.track_date_only
+            self._rollover = chore_data.rollover
 
-        if chore_data.assignment_type is not None:
-            self._assignment_type = AssignmentType(chore_data.assignment_type)
-        else:
-            self._assignment_type = None
+            if chore_data.assignment_type is not None:
+                self._assignment_type = AssignmentType(chore_data.assignment_type)
+            else:
+                self._assignment_type = None
 
-        self._assignment_config = chore_data.assignment_config
-        self._next_execution_assigned_to_user_id = (
-            chore_data.next_execution_assigned_to_user_id
-        )
-        self._userfields = chore_data.userfields
+            self._assignment_config = chore_data.assignment_config
+            self._next_execution_assigned_to_user_id = (
+                chore_data.next_execution_assigned_to_user_id
+            )
+            self._userfields = chore_data.userfields
 
         self._last_tracked_time = response.last_tracked
         self._next_estimated_execution_time = response.next_estimated_execution_time
@@ -95,23 +97,23 @@ class Chore(DataModel):
         return self._id
 
     @property
-    def name(self) -> str:
+    def name(self) -> str | None:
         return self._name
 
     @property
-    def description(self) -> str:
+    def description(self) -> str | None:
         return self._description
 
     @property
-    def period_type(self) -> PeriodType:
+    def period_type(self) -> PeriodType | None:
         return self._period_type
 
     @property
-    def period_config(self) -> str:
+    def period_config(self) -> str | None:
         return self._period_config
 
     @property
-    def period_days(self) -> int:
+    def period_days(self) -> int | None:
         return self._period_days
 
     @property
@@ -123,31 +125,31 @@ class Chore(DataModel):
         return self._rollover
 
     @property
-    def assignment_type(self) -> AssignmentType:
+    def assignment_type(self) -> AssignmentType | None:
         return self._assignment_type
 
     @property
-    def assignment_config(self) -> str:
+    def assignment_config(self) -> str | None:
         return self._assignment_config
 
     @property
-    def next_execution_assigned_to_user_id(self) -> int:
+    def next_execution_assigned_to_user_id(self) -> int | None:
         return self._next_execution_assigned_to_user_id
 
     @property
-    def userfields(self) -> Dict[str, str]:
+    def userfields(self) -> Dict[str, str] | None:
         return self._userfields
 
     @property
-    def last_tracked_time(self) -> datetime:
+    def last_tracked_time(self) -> datetime | None:
         return self._last_tracked_time
 
     @property
-    def next_estimated_execution_time(self) -> datetime:
+    def next_estimated_execution_time(self) -> datetime | None:
         return self._next_estimated_execution_time
 
     @property
-    def last_done_by(self) -> User:
+    def last_done_by(self) -> User | None:
         return self._last_done_by
 
     @property
@@ -155,5 +157,5 @@ class Chore(DataModel):
         return self._track_count
 
     @property
-    def next_execution_assigned_user(self) -> User:
+    def next_execution_assigned_user(self) -> User | None:
         return self._next_execution_assigned_user
