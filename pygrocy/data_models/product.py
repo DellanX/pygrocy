@@ -161,7 +161,7 @@ class Product(DataModel):
         return self._is_aggregated_amount
 
     @property
-    def best_before_date(self) -> datetime.date | None:
+    def best_before_date(self) -> datetime.date:
         return self._best_before_date
 
     @property

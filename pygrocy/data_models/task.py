@@ -61,7 +61,7 @@ class Task(DataModel):
         return self._description
 
     @property
-    def due_date(self) -> datetime.date | None:
+    def due_date(self) -> datetime.date:
         return self._due_date
 
     @property
